@@ -1,0 +1,786 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Trend Analysis</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        {{ trend.trend_name }}
+                        {% if trend.source == 'Google Trends' %}
+                        <span class="badge source-badge-google ms-2">{{ trend.source }}</span>
+                        {% elif 'Reddit' in trend.source %}
+                        <span class="badge source-badge-reddit ms-2">{{ trend.source }}</span>
+                        {% else %}
+                        <span class="badge source-badge-manual ms-2">{{ trend.source }}</span>
+                        {% endif %}
+                    </h3>
+                    <span class="badge bg-secondary">{{ trend.category }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Popularity Metrics</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <strong>Current Score:</strong> 
+                                        {% if trend.popularity_score > 0 %}
+                                        <span class="badge bg-primary fs-5">{{ trend.popularity_score }}</span>
+                                        {% else %}
+                                        <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <strong>Lifecycle Stage:</strong> 
+                                        {% if trend.lifecycle_stage != 'Unknown' %}
+                                        <span class="badge bg-info">{{ trend.lifecycle_stage }}</span>
+                                        {% else %}
+                                        <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <strong>Pop Potential:</strong> 
+                                        {% if trend.pop_potential != 'Unknown' %}
+                                            {% if trend.pop_potential == 'Yes' %}
+                                            <span class="badge bg-success">High</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">Low</span>
+                                            {% endif %}
+                                        {% else %}
+                                        <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <strong>First Observed:</strong>
+                                        <span class="text-muted">{{ analysis_date[:10] }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card h-100">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Time Tracking</h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-primary btn-sm time-filter active" data-period="day">Daily</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm time-filter" data-period="week">Weekly</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm time-filter" data-period="month">Monthly</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container" style="position: relative; height:230px;">
+                                        <canvas id="trendChart"></canvas>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">Shows popularity trend over selected time period</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trend Context & Timeline -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Trend Context & Timeline</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <h6 class="card-title">Key Dates & Events</h6>
+                                            <ul class="timeline">
+                                                <li>
+                                                    <div class="timeline-badge bg-primary"><i class="fas fa-star"></i></div>
+                                                    <div class="timeline-panel">
+                                                        <div class="timeline-heading">
+                                                            <h6 class="timeline-title">First Observed</h6>
+                                                            <p><small class="text-muted"><i class="fas fa-clock"></i> {{ analysis_date[:10] }}</small></p>
+                                                        </div>
+                                                        <div class="timeline-body">
+                                                            <p>Trend first identified and added to tracking system.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="timeline-inverted">
+                                                    <div class="timeline-badge bg-success"><i class="fas fa-chart-line"></i></div>
+                                                    <div class="timeline-panel">
+                                                        <div class="timeline-heading">
+                                                            <h6 class="timeline-title">Latest Analysis</h6>
+                                                            <p><small class="text-muted"><i class="fas fa-clock"></i> {{ analysis_date }}</small></p>
+                                                        </div>
+                                                        <div class="timeline-body">
+                                                            <p>AI-powered analysis and insights generated.</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <h6 class="card-title">Trend Maturity</h6>
+                                            <div class="progress mb-3" style="height: 25px;">
+                                                {% if trend.lifecycle_stage == 'Emerging' %}
+                                                {% set progress = 25 %}
+                                                {% elif trend.lifecycle_stage == 'Growing' %}
+                                                {% set progress = 50 %}
+                                                {% elif trend.lifecycle_stage == 'Mature' %}
+                                                {% set progress = 75 %}
+                                                {% elif trend.lifecycle_stage == 'Declining' %}
+                                                {% set progress = 95 %}
+                                                {% else %}
+                                                {% set progress = 15 %}
+                                                {% endif %}
+                                                
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+                                                    {{ trend.lifecycle_stage|default('Early Stage') }}
+                                                </div>
+                                            </div>
+                                            
+                                            <h6 class="card-title mt-4">Action Recommended</h6>
+                                            <div class="alert {% if trend.pop_potential == 'Yes' %}alert-success{% else %}alert-secondary{% endif %} d-flex align-items-center" role="alert">
+                                                <div>
+                                                    {% if trend.pop_potential == 'Yes' %}
+                                                    <i class="fas fa-check-circle me-2"></i><strong>Priority Action:</strong> Consider creating content around this trend soon.
+                                                    {% else %}
+                                                    <i class="fas fa-info-circle me-2"></i><strong>Monitor:</strong> Keep watching this trend for changes in popularity.
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-tabs" id="analysisTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="context-tab" data-bs-toggle="tab" data-bs-target="#context" type="button" role="tab" aria-controls="context" aria-selected="true">
+                                        <i class="fas fa-info-circle me-1"></i>Context
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button" role="tab" aria-controls="social" aria-selected="false">
+                                        <i class="fas fa-comments me-1"></i>Social Sentiment
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="behavioral-tab" data-bs-toggle="tab" data-bs-target="#behavioral" type="button" role="tab" aria-controls="behavioral" aria-selected="false">
+                                        <i class="fas fa-brain me-1"></i>Behavioral Drivers
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="market-tab" data-bs-toggle="tab" data-bs-target="#market" type="button" role="tab" aria-controls="market" aria-selected="false">
+                                        <i class="fas fa-chart-bar me-1"></i>Market Opportunities
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="strategy-tab" data-bs-toggle="tab" data-bs-target="#strategy" type="button" role="tab" aria-controls="strategy" aria-selected="false">
+                                        <i class="fas fa-bullseye me-1"></i>Engagement Strategies
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="risk-tab" data-bs-toggle="tab" data-bs-target="#risk" type="button" role="tab" aria-controls="risk" aria-selected="false">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>Risk Analysis
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab" aria-controls="content" aria-selected="false">
+                                        <i class="fas fa-pen-fancy me-1"></i>Content Ideas
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content p-3 border border-top-0 rounded-bottom" id="analysisTabContent">
+                                <div class="tab-pane fade show active" id="context" role="tabpanel" aria-labelledby="context-tab">
+                                    {% if analysis.context %}
+                                    <div class="analysis-content">{{ analysis.context|safe }}</div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Detailed background information is being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab">
+                                    {% if analysis.social_sentiment %}
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-thumbs-up text-success me-2"></i>Positive Reactions</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.social_sentiment.positive_reactions %}
+                                            <div class="analysis-content">{{ analysis.social_sentiment.positive_reactions|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Positive reaction data is being analyzed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-thumbs-down text-danger me-2"></i>Negative Reactions</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.social_sentiment.negative_reactions %}
+                                            <div class="analysis-content">{{ analysis.social_sentiment.negative_reactions|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Negative reaction data is being analyzed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-users text-primary me-2"></i>Demographic Variations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.social_sentiment.demographic_variations %}
+                                            <div class="analysis-content">{{ analysis.social_sentiment.demographic_variations|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Demographic analysis is being processed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-fire text-warning me-2"></i>Intensity Metrics</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.social_sentiment.intensity_metrics %}
+                                            <div class="analysis-content">{{ analysis.social_sentiment.intensity_metrics|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Sentiment intensity metrics are being calculated...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Social listening analysis is being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="behavioral" role="tabpanel" aria-labelledby="behavioral-tab">
+                                    {% if analysis.behavioral_drivers %}
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-heartbeat text-danger me-2"></i>Core Psychological Motivations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.behavioral_drivers.core_psychological_motivations %}
+                                            <div class="analysis-content">{{ analysis.behavioral_drivers.core_psychological_motivations|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Psychological motivations are being analyzed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-puzzle-piece text-success me-2"></i>Underlying Needs</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.behavioral_drivers.underlying_needs %}
+                                            <div class="analysis-content">{{ analysis.behavioral_drivers.underlying_needs|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Underlying needs assessment is in progress...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-balance-scale text-primary me-2"></i>Cognitive Biases</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.behavioral_drivers.cognitive_biases %}
+                                            <div class="analysis-content">{{ analysis.behavioral_drivers.cognitive_biases|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Cognitive bias analysis is being processed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-check-square text-warning me-2"></i>Decision-Making Factors</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.behavioral_drivers.decision_making_factors %}
+                                            <div class="analysis-content">{{ analysis.behavioral_drivers.decision_making_factors|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Decision-making analysis is underway...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Behavioral economics analysis is being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="market" role="tabpanel" aria-labelledby="market-tab">
+                                    {% if analysis.market_opportunities %}
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-box-open text-primary me-2"></i>Product Gaps</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.market_opportunities.product_gaps %}
+                                            <div class="analysis-content">{{ analysis.market_opportunities.product_gaps|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Product gap analysis is in progress...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-lightbulb text-warning me-2"></i>Service Innovations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.market_opportunities.service_innovations %}
+                                            <div class="analysis-content">{{ analysis.market_opportunities.service_innovations|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Service innovation opportunities are being identified...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-trophy text-success me-2"></i>Competitive Advantage</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.market_opportunities.competitive_advantage %}
+                                            <div class="analysis-content">{{ analysis.market_opportunities.competitive_advantage|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Competitive advantage analysis is underway...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-clock text-danger me-2"></i>Timing Recommendations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.market_opportunities.timing_recommendations %}
+                                            <div class="analysis-content">{{ analysis.market_opportunities.timing_recommendations|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Market timing analysis is being calculated...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Market opportunity analysis is being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="strategy" role="tabpanel" aria-labelledby="strategy-tab">
+                                    {% if analysis.engagement_strategies %}
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-bullhorn text-primary me-2"></i>Marketing Strategies</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.engagement_strategies.marketing %}
+                                            <div class="analysis-content">{{ analysis.engagement_strategies.marketing|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Marketing strategy recommendations are being formulated...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-cubes text-success me-2"></i>Product Strategies</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.engagement_strategies.product %}
+                                            <div class="analysis-content">{{ analysis.engagement_strategies.product|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Product strategy recommendations are being analyzed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-users text-warning me-2"></i>Community Building</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.engagement_strategies.community %}
+                                            <div class="analysis-content">{{ analysis.engagement_strategies.community|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Community engagement strategies are being developed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-chart-line text-danger me-2"></i>Key Performance Metrics</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.engagement_strategies.metrics %}
+                                            <div class="analysis-content">{{ analysis.engagement_strategies.metrics|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Performance metrics recommendations are being calculated...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Engagement strategy recommendations are being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="risk" role="tabpanel" aria-labelledby="risk-tab">
+                                    {% if analysis.risk_analysis %}
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-bolt text-danger me-2"></i>Potential Backlash</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.risk_analysis.potential_backlash %}
+                                            <div class="analysis-content">{{ analysis.risk_analysis.potential_backlash|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Backlash risk assessment is in progress...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-gavel text-primary me-2"></i>Regulatory Considerations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.risk_analysis.regulatory_considerations %}
+                                            <div class="analysis-content">{{ analysis.risk_analysis.regulatory_considerations|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Regulatory risk analysis is being processed...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-fist-raised text-warning me-2"></i>Competitive Threats</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.risk_analysis.competitive_threats %}
+                                            <div class="analysis-content">{{ analysis.risk_analysis.competitive_threats|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Competitive threat analysis is underway...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0"><i class="fas fa-hourglass-half text-success me-2"></i>Trend Sustainability</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.risk_analysis.trend_sustainability %}
+                                            <div class="analysis-content">{{ analysis.risk_analysis.trend_sustainability|safe }}</div>
+                                            {% else %}
+                                            <p class="text-muted"><i>Trend sustainability forecast is being calculated...</i></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Risk analysis is being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="content" role="tabpanel" aria-labelledby="content-tab">
+                                    {% if analysis.content_ideas %}
+                                    <div class="analysis-content">{{ analysis.content_ideas|safe }}</div>
+                                    {% else %}
+                                    <p class="text-muted"><i>Content ideas are being generated...</i></p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-clock me-1"></i> Analysis generated: {{ analysis_date|default('Just now') }}
+                        <span class="ms-3"><i class="fas fa-redo me-1"></i><a href="{{ url_for('trend_detail', trend_name=trend.trend_name, source=trend.source, refresh=1) }}" class="text-decoration-none">Refresh Analysis</a></span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list-ul me-2"></i>Related Trends</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for related_trend in related_trends %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ related_trend.trend_name }}</h6>
+                                    {% if related_trend.source == 'Google Trends' %}
+                                    <span class="badge source-badge-google">{{ related_trend.source }}</span>
+                                    {% elif 'Reddit' in related_trend.source %}
+                                    <span class="badge source-badge-reddit">{{ related_trend.source }}</span>
+                                    {% else %}
+                                    <span class="badge source-badge-manual">{{ related_trend.source }}</span>
+                                    {% endif %}
+                                    <p class="card-text small mt-2">Category: {{ related_trend.category }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{{ url_for('trend_detail', trend_name=related_trend.trend_name, source=related_trend.source) }}" class="btn btn-sm btn-outline-primary">View Analysis</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+/* Timeline styling */
+.timeline {
+    list-style: none;
+    padding: 20px 0 20px;
+    position: relative;
+}
+
+.timeline:before {
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 3px;
+    background-color: #eeeeee;
+    left: 50%;
+    margin-left: -1.5px;
+}
+
+.timeline > li {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline > li:before,
+.timeline > li:after {
+    content: " ";
+    display: table;
+}
+
+.timeline > li:after {
+    clear: both;
+}
+
+.timeline > li > .timeline-panel {
+    width: 46%;
+    float: left;
+    border: 1px solid #d4d4d4;
+    border-radius: 2px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.075);
+}
+
+.timeline > li > .timeline-panel:before {
+    position: absolute;
+    top: 26px;
+    right: -15px;
+    display: inline-block;
+    border-top: 15px solid transparent;
+    border-left: 15px solid #ccc;
+    border-right: 0 solid #ccc;
+    border-bottom: 15px solid transparent;
+    content: " ";
+}
+
+.timeline > li > .timeline-panel:after {
+    position: absolute;
+    top: 27px;
+    right: -14px;
+    display: inline-block;
+    border-top: 14px solid transparent;
+    border-left: 14px solid #fff;
+    border-right: 0 solid #fff;
+    border-bottom: 14px solid transparent;
+    content: " ";
+}
+
+.timeline > li > .timeline-badge {
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 1.4em;
+    text-align: center;
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    margin-left: -25px;
+    background-color: #999999;
+    z-index: 100;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+
+.timeline > li.timeline-inverted > .timeline-panel {
+    float: right;
+}
+
+.timeline > li.timeline-inverted > .timeline-panel:before {
+    border-left-width: 0;
+    border-right-width: 15px;
+    left: -15px;
+    right: auto;
+}
+
+.timeline > li.timeline-inverted > .timeline-panel:after {
+    border-left-width: 0;
+    border-right-width: 14px;
+    left: -14px;
+    right: auto;
+}
+
+.timeline-title {
+    margin-top: 0;
+    color: inherit;
+}
+
+.timeline-body > p,
+.timeline-body > ul {
+    margin-bottom: 0;
+}
+</style>
+
+<script>
+    // Initialize the trend chart
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    let trendChart;
+    
+    // Function to update the chart with new data
+    function updateChart(timeData) {
+        // Destroy existing chart if it exists
+        if (trendChart) {
+            trendChart.destroy();
+        }
+        
+        // Create dates and scores arrays from the data
+        const dates = timeData.map(item => item.date);
+        const scores = timeData.map(item => item.popularity_score);
+        
+        // Create the new chart
+        trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Popularity Score',
+                    data: scores,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        padding: 10,
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Function to fetch time data
+    function fetchTimeData(period) {
+        fetch(`/api/trend/{{ trend.trend_name|replace("'", "\\'") }}/{{ trend.source|replace("'", "\\'") }}/time?period=${period}`)
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data);
+            })
+            .catch(error => {
+                console.error('Error fetching time data:', error);
+            });
+    }
+    
+    // Initialize with daily data
+    fetchTimeData('day');
+    
+    // Handle time period filter clicks
+    document.querySelectorAll('.time-filter').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.time-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Fetch data for the selected period
+            fetchTimeData(this.dataset.period);
+        });
+    });
+    
+    // Format analysis content for better display
+    document.querySelectorAll('.analysis-content').forEach(content => {
+        // Replace newlines with <br> tags
+        let formattedContent = content.innerHTML.replace(/\n/g, '<br>');
+        
+        // Convert markdown-style lists
+        formattedContent = formattedContent.replace(/- (.*?)(<br>|$)/g, '<li>$1</li>');
+        
+        // Wrap lists in <ul> tags
+        if (formattedContent.includes('<li>')) {
+            formattedContent = '<ul>' + formattedContent + '</ul>';
+        }
+        
+        // Bold text between asterisks
+        formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+        
+        content.innerHTML = formattedContent;
+    });
+</script>
+{% endblock %}

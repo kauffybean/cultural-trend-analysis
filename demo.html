@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Trend Aggregator - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .badge {
+            font-size: 0.9em;
+            padding: 5px 10px;
+        }
+        .source-badge-google {
+            background-color: #4285F4;
+            color: white;
+        }
+        .source-badge-reddit {
+            background-color: #FF5700;
+            color: white;
+        }
+        .source-badge-manual {
+            background-color: #6c757d;
+            color: white;
+        }
+        .top-opportunity-card {
+            border-left: 5px solid #28a745;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,123,255,0.05);
+            cursor: pointer;
+        }
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .tab-content {
+            min-height: 300px;
+        }
+        .insights-list li, .content-ideas-list li {
+            margin-bottom: 10px;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            list-style: none;
+        }
+        .timeline-badge {
+            position: absolute;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            color: white;
+            font-size: 0.7em;
+            line-height: 20px;
+        }
+        .timeline-panel {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .timeline-inverted {
+            padding-left: 0;
+            padding-right: 30px;
+        }
+        .timeline-inverted .timeline-badge {
+            left: auto;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container py-4">
+        <header class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="display-5 fw-bold">Cultural Trend Aggregator</h1>
+                <span class="badge bg-primary">Light Mode</span>
+            </div>
+            <p class="lead text-muted">Track and analyze trending topics across multiple platforms</p>
+            
+            <!-- Quick Access to Historical Tools -->
+            <div class="alert alert-primary d-flex align-items-center mt-3">
+                <i class="fas fa-history me-3 fs-4"></i>
+                <div>
+                    <strong>New! Historical Analysis Tools:</strong> 
+                    <div class="btn-group ms-3">
+                        <a href="#historical-comparison" class="btn btn-outline-primary btn-sm">Trend Comparison</a>
+                        <a href="#historical-tracking" class="btn btn-outline-primary btn-sm">Historical Tracking</a>
+                        <a href="#seasonality-analysis" class="btn btn-outline-primary btn-sm">Seasonality Analysis</a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </header>
+
+        <!-- Top Opportunities Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Top Opportunities</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Opportunity 1 -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 top-opportunity-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">New Marvel Series</h5>
+                                        <span class="badge source-badge-google mb-2">Google Trends</span>
+                                        <span class="badge bg-secondary mb-2">Entertainment</span>
+                                        <p class="card-text">Currently trending with high search volume and social media engagement.</p>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="badge bg-info">Score: 95</span>
+                                            <a href="#trend1" class="btn btn-sm btn-outline-primary">View Analysis</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Opportunity 2 -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 top-opportunity-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Scientists discover new planet</h5>
+                                        <span class="badge source-badge-reddit mb-2">Reddit - r/science</span>
+                                        <span class="badge bg-secondary mb-2">Science</span>
+                                        <p class="card-text">Generating significant discussion and engagement across platforms.</p>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="badge bg-info">Score: 92</span>
+                                            <a href="#trend2" class="btn btn-sm btn-outline-primary">View Analysis</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Opportunity 3 -->
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 top-opportunity-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Sustainable Fashion</h5>
+                                        <span class="badge source-badge-manual mb-2">Industry Reports</span>
+                                        <span class="badge bg-secondary mb-2">Fashion</span>
+                                        <p class="card-text">Growing trend with strong potential for content creation.</p>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="badge bg-info">Growing</span>
+                                            <a href="#trend3" class="btn btn-sm btn-outline-primary">View Analysis</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trend Data Tab Navigation -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all">All Trends</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="google-tab" data-bs-toggle="tab" href="#google">Google Trends</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="reddit-tab" data-bs-toggle="tab" href="#reddit">Reddit</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="manual-tab" data-bs-toggle="tab" href="#manual">Manual Entries</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Pro Tip:</strong> Each trend has a detailed analysis page showing context, time-based data, and content recommendations. 
+                            <span class="d-block mt-1 ms-4">Click on any trend name in the table below to see its full analysis.</span>
+                            
+                            <div class="mt-3">
+                                <strong>Quick Access Links to Top Trend Analysis:</strong>
+                                <div class="btn-group mt-2">
+                                    <a href="#trend1" class="btn btn-outline-primary me-2">Trend #1</a>
+                                    <a href="#trend2" class="btn btn-outline-primary me-2">Trend #2</a>
+                                    <a href="#trend3" class="btn btn-outline-primary me-2">Trend #3</a>
+                                    <a href="#trend4" class="btn btn-outline-primary me-2">Trend #4</a>
+                                    <a href="#trend5" class="btn btn-outline-primary me-2">Trend #5</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="all">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="trends-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Trend Name</th>
+                                                <th>Source</th>
+                                                <th>Category</th>
+                                                <th>Popularity Score</th>
+                                                <th>Lifecycle Stage</th>
+                                                <th>Pop Potential</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Trend 1 -->
+                                            <tr class="trend-row" id="trend1">
+                                                <td>
+                                                    <a href="#trend1" class="text-decoration-none text-dark">
+                                                        New Marvel Series
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span class="badge source-badge-google">Google Trends</span>
+                                                </td>
+                                                <td>Entertainment</td>
+                                                <td>95</td>
+                                                <td>Growing</td>
+                                                <td>
+                                                    <span class="badge bg-success">Yes</span>
+                                                </td>
+                                            </tr>
+                                            <!-- Trend 2 -->
+                                            <tr class="trend-row" id="trend2">
+                                                <td>
+                                                    <a href="#trend2" class="text-decoration-none text-dark">
+                                                        Scientists discover new planet
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span class="badge source-badge-reddit">Reddit - r/science</span>
+                                                </td>
+                                                <td>Science</td>
+                                                <td>92</td>
+                                                <td>Emerging</td>
+                                                <td>
+                                                    <span class="badge bg-success">Yes</span>
+                                                </td>
+                                            </tr>
+                                            <!-- Trend 3 -->
+                                            <tr class="trend-row" id="trend3">
+                                                <td>
+                                                    <a href="#trend3" class="text-decoration-none text-dark">
+                                                        Sustainable Fashion
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span class="badge source-badge-manual">Industry Reports</span>
+                                                </td>
+                                                <td>Fashion</td>
+                                                <td>85</td>
+                                                <td>Growing</td>
+                                                <td>
+                                                    <span class="badge bg-success">Yes</span>
+                                                </td>
+                                            </tr>
+                                            <!-- Trend 4 -->
+                                            <tr class="trend-row" id="trend4">
+                                                <td>
+                                                    <a href="#trend4" class="text-decoration-none text-dark">
+                                                        Latest Smartphone Release
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span class="badge source-badge-google">Google Trends</span>
+                                                </td>
+                                                <td>Technology</td>
+                                                <td>88</td>
+                                                <td>Mature</td>
+                                                <td>
+                                                    <span class="badge bg-success">Yes</span>
+                                                </td>
+                                            </tr>
+                                            <!-- Trend 5 -->
+                                            <tr class="trend-row" id="trend5">
+                                                <td>
+                                                    <a href="#trend5" class="text-decoration-none text-dark">
+                                                        New documentary about AI
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span class="badge source-badge-reddit">Reddit - r/Futurology</span>
+                                                </td>
+                                                <td>Technology</td>
+                                                <td>87</td>
+                                                <td>Growing</td>
+                                                <td>
+                                                    <span class="badge bg-success">Yes</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="google">
+                                <p class="py-5 text-center text-muted">Google Trends data would appear here.</p>
+                            </div>
+                            <div class="tab-pane fade" id="reddit">
+                                <p class="py-5 text-center text-muted">Reddit Trends data would appear here.</p>
+                            </div>
+                            <div class="tab-pane fade" id="manual">
+                                <p class="py-5 text-center text-muted">Manual Entries would appear here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Trend Tracking and Comparison Section -->
+        <div class="row mb-4" id="historical-comparison">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-history me-2"></i>Historical Trend Comparison</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Comparison Options</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="form-label">Select Trends to Compare</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trend-compare" type="checkbox" value="New Marvel Series" id="trend1-check" checked>
+                                                    <label class="form-check-label" for="trend1-check">
+                                                        New Marvel Series
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trend-compare" type="checkbox" value="Scientists discover new planet" id="trend2-check" checked>
+                                                    <label class="form-check-label" for="trend2-check">
+                                                        Scientists discover new planet
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trend-compare" type="checkbox" value="Sustainable Fashion" id="trend3-check">
+                                                    <label class="form-check-label" for="trend3-check">
+                                                        Sustainable Fashion
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trend-compare" type="checkbox" value="Latest Smartphone Release" id="trend4-check">
+                                                    <label class="form-check-label" for="trend4-check">
+                                                        Latest Smartphone Release
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trend-compare" type="checkbox" value="New documentary about AI" id="trend5-check">
+                                                    <label class="form-check-label" for="trend5-check">
+                                                        New documentary about AI
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Time Range</label>
+                                                <select class="form-select" id="comparison-time-range">
+                                                    <option value="week">Past Week</option>
+                                                    <option value="month" selected>Past Month</option>
+                                                    <option value="quarter">Past 3 Months</option>
+                                                    <option value="year">Past Year</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Comparison Metric</label>
+                                                <select class="form-select" id="comparison-metric">
+                                                    <option value="popularity">Popularity Score</option>
+                                                    <option value="growth">Growth Rate</option>
+                                                    <option value="social">Social Mentions</option>
+                                                    <option value="search">Search Volume</option>
+                                                </select>
+                                            </div>
+                                            <button type="button" class="btn btn-primary" id="update-comparison">Update Comparison</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Trend Comparison Chart</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container" style="position: relative; height:400px;">
+                                            <canvas id="comparisonChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Comparison Insights</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="alert alert-info">
+                                            <h6><i class="fas fa-lightbulb me-2"></i>Correlation Analysis</h6>
+                                            <p>The data suggests a <strong>moderate positive correlation (0.68)</strong> between "New Marvel Series" and "Scientists discover new planet" trends. This could indicate overlapping audience interests in entertainment and science fiction content.</p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold">Growth Comparison</h6>
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Trend</th>
+                                                            <th>Weekly Growth</th>
+                                                            <th>Monthly Growth</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>New Marvel Series</td>
+                                                            <td>+42%</td>
+                                                            <td>+138%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Scientists discover new planet</td>
+                                                            <td>+54%</td>
+                                                            <td>+112%</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold">Channel Performance</h6>
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Trend</th>
+                                                            <th>Search</th>
+                                                            <th>Social</th>
+                                                            <th>News</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>New Marvel Series</td>
+                                                            <td>Very High</td>
+                                                            <td>High</td>
+                                                            <td>Medium</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Scientists discover new planet</td>
+                                                            <td>Medium</td>
+                                                            <td>Very High</td>
+                                                            <td>High</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Historical Tracking Section -->
+        <div class="row mb-4" id="historical-tracking">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="fas fa-chart-area me-2"></i>Historical Trend Tracking</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="trend-select" class="form-label">Select Trend</label>
+                                    <select class="form-select" id="trend-select">
+                                        <option value="New Marvel Series">New Marvel Series</option>
+                                        <option value="Scientists discover new planet">Scientists discover new planet</option>
+                                        <option value="Sustainable Fashion">Sustainable Fashion</option>
+                                        <option value="Latest Smartphone Release">Latest Smartphone Release</option>
+                                        <option value="New documentary about AI">New documentary about AI</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="timeframe-select" class="form-label">Timeframe</label>
+                                    <select class="form-select" id="timeframe-select">
+                                        <option value="1m">Past Month</option>
+                                        <option value="3m">Past 3 Months</option>
+                                        <option value="6m">Past 6 Months</option>
+                                        <option value="1y" selected>Past Year</option>
+                                        <option value="all">All Time</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Data Points</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="popularity-check" checked>
+                                        <label class="form-check-label" for="popularity-check">
+                                            Popularity Score
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="engagement-check" checked>
+                                        <label class="form-check-label" for="engagement-check">
+                                            Engagement Rate
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="mentions-check">
+                                        <label class="form-check-label" for="mentions-check">
+                                            Social Mentions
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-primary" id="update-history">Update History</button>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">Key Statistics</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Peak Score:</span>
+                                            <span class="fw-bold">95</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Average Score:</span>
+                                            <span class="fw-bold">62.4</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Growth Rate:</span>
+                                            <span class="fw-bold text-success">+138%</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Volatility:</span>
+                                            <span class="fw-bold">Medium</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Historical Trend Data</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container" style="position: relative; height:400px;">
+                                            <canvas id="historyChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Key Events Timeline -->
+                        <div class="card mt-2">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Key Events Timeline</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="timeline-horizontal">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card border-left-primary h-100">
+                                                <div class="card-body">
+                                                    <div class="text-xs fw-bold text-primary text-uppercase mb-1">Jan 15, 2025</div>
+                                                    <div class="h5 mb-0 fw-bold">First Mention</div>
+                                                    <p class="small mt-2">Initial studio announcement with limited details</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card border-left-info h-100">
+                                                <div class="card-body">
+                                                    <div class="text-xs fw-bold text-info text-uppercase mb-1">Feb 10, 2025</div>
+                                                    <div class="h5 mb-0 fw-bold">Cast Announcement</div>
+                                                    <p class="small mt-2">Major actors revealed, social media spike</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card border-left-warning h-100">
+                                                <div class="card-body">
+                                                    <div class="text-xs fw-bold text-warning text-uppercase mb-1">Mar 22, 2025</div>
+                                                    <div class="h5 mb-0 fw-bold">Trailer Release</div>
+                                                    <p class="small mt-2">First footage revealed, major search volume increase</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card border-left-success h-100">
+                                                <div class="card-body">
+                                                    <div class="text-xs fw-bold text-success text-uppercase mb-1">Apr 13, 2025</div>
+                                                    <div class="h5 mb-0 fw-bold">Release Date Announced</div>
+                                                    <p class="small mt-2">Official premiere date set, current peak interest</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Seasonality Analysis -->
+                        <div class="card mt-4" id="seasonality-analysis">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Seasonality Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <h6 class="fw-bold mb-3">Seasonal Patterns</h6>
+                                        <p>Analysis of "New Marvel Series" trend reveals the following seasonal patterns:</p>
+                                        <ul>
+                                            <li><strong>Day of Week:</strong> Highest interest on Fridays (+24% over average)</li>
+                                            <li><strong>Monthly:</strong> Stronger performance in Q1 and Q3</li>
+                                            <li><strong>Annual Events:</strong> Peaks coincide with comic conventions and award seasons</li>
+                                            <li><strong>Time of Day:</strong> Evening hours show 37% higher engagement</li>
+                                        </ul>
+                                        <div class="alert alert-success mt-3">
+                                            <h6 class="fw-bold"><i class="fas fa-lightbulb me-2"></i>Content Planning Insight</h6>
+                                            <p class="mb-0">Optimal content release timing would be Friday evenings, with secondary recommendations for Tuesday mornings for news updates.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <h6 class="fw-bold mb-3">Heatmap: Interest by Day & Time</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Mon</th>
+                                                        <th>Tue</th>
+                                                        <th>Wed</th>
+                                                        <th>Thu</th>
+                                                        <th>Fri</th>
+                                                        <th>Sat</th>
+                                                        <th>Sun</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Morning</th>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-light">Low</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Afternoon</th>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-warning">Med</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Evening</th>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                        <td class="bg-danger text-white">V.High</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Night</th>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-light">Low</td>
+                                                        <td class="bg-warning">Med</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                        <td class="bg-info text-white">High</td>
+                                                        <td class="bg-warning">Med</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <h6 class="fw-bold mb-3 mt-4">Monthly Interest Pattern</h6>
+                                        <div class="chart-container" style="position: relative; height:200px;">
+                                            <canvas id="seasonalityChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trend Detail Section -->
+        <div class="row mb-4" id="trend-detail">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                        <h3 class="mb-0">
+                            New Marvel Series
+                            <span class="badge source-badge-google ms-2">Google Trends</span>
+                        </h3>
+                        <span class="badge bg-secondary">Entertainment</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Popularity Metrics</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <strong>Current Score:</strong> 
+                                            <span class="badge bg-primary fs-5">95</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <strong>Lifecycle Stage:</strong> 
+                                            <span class="badge bg-info">Growing</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <strong>Pop Potential:</strong> 
+                                            <span class="badge bg-success">High</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <strong>First Observed:</strong>
+                                            <span class="text-muted">2025-04-13</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Time Tracking</h5>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-primary btn-sm time-filter active" data-period="day">Daily</button>
+                                            <button type="button" class="btn btn-outline-primary btn-sm time-filter" data-period="week">Weekly</button>
+                                            <button type="button" class="btn btn-outline-primary btn-sm time-filter" data-period="month">Monthly</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container" style="position: relative; height:230px;">
+                                            <canvas id="trendChart"></canvas>
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <small class="text-muted">Shows popularity trend over selected time period</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Trend Context & Timeline -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Trend Context & Timeline</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <h6 class="card-title">Key Dates & Events</h6>
+                                                <ul class="timeline">
+                                                    <li>
+                                                        <div class="timeline-badge bg-primary"><i class="fas fa-star"></i></div>
+                                                        <div class="timeline-panel">
+                                                            <div class="timeline-heading">
+                                                                <h6 class="timeline-title">First Observed</h6>
+                                                                <p><small class="text-muted"><i class="fas fa-clock"></i> 2025-04-13</small></p>
+                                                            </div>
+                                                            <div class="timeline-body">
+                                                                <p>Trend first identified and added to tracking system.</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="timeline-inverted">
+                                                        <div class="timeline-badge bg-success"><i class="fas fa-chart-line"></i></div>
+                                                        <div class="timeline-panel">
+                                                            <div class="timeline-heading">
+                                                                <h6 class="timeline-title">Latest Analysis</h6>
+                                                                <p><small class="text-muted"><i class="fas fa-clock"></i> 2025-04-13 21:00 UTC</small></p>
+                                                            </div>
+                                                            <div class="timeline-body">
+                                                                <p>AI-powered analysis and insights generated.</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <h6 class="card-title">Trend Maturity</h6>
+                                                <div class="progress mb-3" style="height: 25px;">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                                        Growing
+                                                    </div>
+                                                </div>
+                                                
+                                                <h6 class="card-title mt-4">Action Recommended</h6>
+                                                <div class="alert alert-success d-flex align-items-center" role="alert">
+                                                    <div>
+                                                        <i class="fas fa-check-circle me-2"></i><strong>Priority Action:</strong> Consider creating content around this trend soon.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="nav nav-tabs" id="analysisTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="context-tab" data-bs-toggle="tab" data-bs-target="#context" type="button" role="tab" aria-controls="context" aria-selected="true">
+                                            <i class="fas fa-info-circle me-1"></i>Context
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="insights-tab" data-bs-toggle="tab" data-bs-target="#insights" type="button" role="tab" aria-controls="insights" aria-selected="false">
+                                            <i class="fas fa-lightbulb me-1"></i>Insights
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="implications-tab" data-bs-toggle="tab" data-bs-target="#implications" type="button" role="tab" aria-controls="implications" aria-selected="false">
+                                            <i class="fas fa-project-diagram me-1"></i>Implications
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab" aria-controls="content" aria-selected="false">
+                                            <i class="fas fa-pen-fancy me-1"></i>Content Ideas
+                                        </button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content p-3 border border-top-0 rounded-bottom" id="analysisTabContent">
+                                    <div class="tab-pane fade show active" id="context" role="tabpanel" aria-labelledby="context-tab">
+                                        <div class="analysis-content">
+                                            <p>The "New Marvel Series" trend refers to the recent announcement of an upcoming Marvel television series that has caught significant attention across multiple platforms. This trend falls under the Entertainment category and is primarily being driven by fans of the Marvel Cinematic Universe and comic book enthusiasts.</p>
+                                            <p>The announcement generated immediate buzz due to the involvement of several high-profile actors and creators, and the series' connection to existing Marvel properties. Google search activity shows a sharp increase following the announcement, with related searches for character names, plot theories, and release date information.</p>
+                                            <p>Social media conversations around this trend have been overwhelmingly positive, with fans expressing excitement about the direction of the new series and speculating about how it will connect to the broader Marvel universe.</p>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="insights" role="tabpanel" aria-labelledby="insights-tab">
+                                        <div class="analysis-content">
+                                            <ul>
+                                                <li>This trend has experienced a rapid rise in search interest over the past 48 hours, indicating high immediate public interest.</li>
+                                                <li>The audience demographic spans multiple age groups, with particular strength in the 18-34 demographic.</li>
+                                                <li>Related search terms include character names, casting information, and release date queries.</li>
+                                                <li>Sentiment analysis of social media conversations indicates an approximately 85% positive reaction.</li>
+                                                <li>This trend has cross-platform appeal, performing strongly across search, social media, and entertainment news sites.</li>
+                                                <li>Time-of-day analysis shows consistent interest throughout the day, indicating broad international appeal.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="implications" role="tabpanel" aria-labelledby="implications-tab">
+                                        <div class="analysis-content">
+                                            <p>For content creators and marketers, this trend presents multiple opportunities to engage audiences interested in entertainment and pop culture. The strong positive sentiment and broad demographic appeal make it a versatile topic for content strategies.</p>
+                                            
+                                            <p><strong>Entertainment Industry:</strong> Media outlets, reviewers, and entertainment blogs can expect high engagement on content related to this series. Early analysis, casting discussions, and universe connections will perform well.</p>
+                                            
+                                            <p><strong>Retail and E-commerce:</strong> There's a strong potential correlation with merchandise sales, particularly for related collectibles, clothing, and existing Marvel product lines.</p>
+                                            
+                                            <p><strong>Social Media:</strong> This trend has high viral potential and is ideal for engagement-focused strategies like polls, theories, and character discussions.</p>
+                                            
+                                            <p><strong>Timing Considerations:</strong> Interest is projected to remain high for approximately 2-3 weeks before stabilizing, with additional spikes expected with any new announcements or promotional content releases.</p>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="content" role="tabpanel" aria-labelledby="content-tab">
+                                        <div class="analysis-content">
+                                            <ol>
+                                                <li>"Everything We Know About the New Marvel Series So Far"</li>
+                                                <li>"5 Ways the New Marvel Series Could Connect to the Broader MCU"</li>
+                                                <li>"Character Spotlights: Who to Know Before Watching the New Marvel Series"</li>
+                                                <li>"Fan Theories: What the New Marvel Series Could Mean for Phase 5"</li>
+                                                <li>"How the New Marvel Series Compares to Previous Marvel TV Shows"</li>
+                                                <li>"The Most Anticipated Moments from the New Marvel Series"</li>
+                                                <li>"What Comic Book Storylines Could Inspire the New Marvel Series"</li>
+                                                <li>"Director and Writer Analysis: The Creative Team Behind the New Marvel Series"</li>
+                                                <li>"Watching Guide: What to Stream Before the New Marvel Series Premieres"</li>
+                                                <li>"Merchandise Watch: Collectibles and Products Inspired by the New Marvel Series"</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sample data for the trend chart
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1 Day Ago', 'Yesterday', 'Today'],
+                datasets: [{
+                    label: 'Popularity Score',
+                    data: [65, 82, 95],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Historical comparison chart
+        const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+        const comparisonChart = new Chart(comparisonCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'New Marvel Series',
+                        data: [10, 12, 15, 25, 35, 45, 40, 35, 55, 75, 85, 95],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    },
+                    {
+                        label: 'Scientists discover new planet',
+                        data: [5, 8, 12, 20, 15, 35, 48, 62, 75, 85, 88, 92],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Popularity Score'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month (2024-2025)'
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Trend Comparison (Past Year)'
+                    }
+                }
+            }
+        });
+
+        // Historical tracking chart
+        const historyCtx = document.getElementById('historyChart').getContext('2d');
+        const historyChart = new Chart(historyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Apr 2024', 'May 2024', 'Jun 2024', 'Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025'],
+                datasets: [
+                    {
+                        label: 'Popularity Score',
+                        data: [25, 30, 35, 32, 40, 45, 55, 62, 70, 75, 85, 90, 95],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.1,
+                        fill: true,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Engagement Rate',
+                        data: [20, 22, 25, 30, 35, 40, 45, 52, 60, 68, 75, 82, 90],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.1,
+                        fill: true,
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Score'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time Period'
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'New Marvel Series - Historical Data (Past Year)'
+                    }
+                }
+            }
+        });
+
+        // Seasonality chart
+        const seasonalityCtx = document.getElementById('seasonalityChart').getContext('2d');
+        const seasonalityChart = new Chart(seasonalityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'Average Monthly Interest',
+                        data: [65, 70, 75, 90, 60, 55, 65, 75, 85, 70, 65, 80],
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Time period filter for trend chart
+        document.querySelectorAll('.time-filter').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.time-filter').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Get the time period
+                const period = this.getAttribute('data-period');
+                
+                // Update chart data based on period
+                let labels, data;
+                
+                if (period === 'day') {
+                    labels = ['1 Day Ago', 'Yesterday', 'Today'];
+                    data = [65, 82, 95];
+                } else if (period === 'week') {
+                    labels = ['1 Week Ago', '5 Days Ago', '3 Days Ago', 'Today'];
+                    data = [40, 58, 75, 95];
+                } else if (period === 'month') {
+                    labels = ['1 Month Ago', '3 Weeks Ago', '2 Weeks Ago', '1 Week Ago', 'Today'];
+                    data = [15, 30, 50, 75, 95];
+                }
+                
+                // Update chart data
+                trendChart.data.labels = labels;
+                trendChart.data.datasets[0].data = data;
+                trendChart.update();
+            });
+        });
+
+        // Handle trend row click
+        document.querySelectorAll('.trend-row').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Prevent default only if the click is not on an anchor tag
+                if (e.target.tagName !== 'A') {
+                    e.preventDefault();
+                    // Get the trend ID
+                    const trendId = this.getAttribute('id');
+                    // Scroll to the trend detail section
+                    document.getElementById('trend-detail').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Update comparison chart when form changes
+        document.getElementById('update-comparison').addEventListener('click', function() {
+            // Get selected trends
+            const selectedTrends = [];
+            document.querySelectorAll('.trend-compare:checked').forEach(checkbox => {
+                selectedTrends.push(checkbox.value);
+            });
+            
+            // Get time range and metric
+            const timeRange = document.getElementById('comparison-time-range').value;
+            const metric = document.getElementById('comparison-metric').value;
+            
+            // Sample data for different metrics
+            const metricData = {
+                'popularity': {
+                    'New Marvel Series': [10, 12, 15, 25, 35, 45, 40, 35, 55, 75, 85, 95],
+                    'Scientists discover new planet': [5, 8, 12, 20, 15, 35, 48, 62, 75, 85, 88, 92],
+                    'Sustainable Fashion': [40, 45, 50, 55, 60, 65, 70, 75, 80, 82, 83, 85],
+                    'Latest Smartphone Release': [60, 65, 70, 75, 80, 85, 88, 90, 88, 85, 86, 88],
+                    'New documentary about AI': [15, 20, 25, 30, 35, 40, 45, 50, 65, 75, 80, 87]
+                },
+                'growth': {
+                    'New Marvel Series': [5, 8, 12, 18, 25, 22, 15, 20, 35, 45, 55, 42],
+                    'Scientists discover new planet': [3, 5, 8, 15, 12, 28, 30, 40, 32, 28, 24, 54],
+                    'Sustainable Fashion': [8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35],
+                    'Latest Smartphone Release': [12, 15, 18, 20, 25, 28, 30, 32, 30, 25, 22, 20],
+                    'New documentary about AI': [5, 8, 12, 15, 18, 20, 22, 25, 35, 45, 50, 45]
+                },
+                'social': {
+                    'New Marvel Series': [2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 8000],
+                    'Scientists discover new planet': [1500, 2000, 2500, 3000, 3200, 3500, 4000, 4500, 5000, 5500, 6000, 7500],
+                    'Sustainable Fashion': [3000, 3200, 3500, 3800, 4000, 4200, 4500, 4800, 5000, 5200, 5500, 6000],
+                    'Latest Smartphone Release': [4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 7200, 7000, 6800, 7200],
+                    'New documentary about AI': [800, 1200, 1500, 1800, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 6000]
+                },
+                'search': {
+                    'New Marvel Series': [5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 12000],
+                    'Scientists discover new planet': [3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 9000],
+                    'Sustainable Fashion': [6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500],
+                    'Latest Smartphone Release': [7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 10000, 9500, 9000, 9500],
+                    'New documentary about AI': [2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 8000]
+                }
+            };
+            
+            // Time range labels
+            const timeLabels = {
+                'week': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                'month': ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                'quarter': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'year': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            };
+            
+            // Update chart datasets
+            comparisonChart.data.labels = timeLabels[timeRange];
+            
+            // Clear existing datasets
+            comparisonChart.data.datasets = [];
+            
+            // Add datasets for selected trends
+            const colors = ['rgb(75, 192, 192)', 'rgb(255, 99, 132)', 'rgb(255, 205, 86)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'];
+            
+            selectedTrends.forEach((trend, index) => {
+                let data;
+                if (timeRange === 'week') {
+                    // Use only the last 7 days of data
+                    data = metricData[metric][trend].slice(-7);
+                } else if (timeRange === 'month') {
+                    // Group monthly data into 4 weeks
+                    const monthData = metricData[metric][trend].slice(-12);
+                    data = [
+                        monthData.slice(0, 3).reduce((a, b) => a + b, 0) / 3,
+                        monthData.slice(3, 6).reduce((a, b) => a + b, 0) / 3,
+                        monthData.slice(6, 9).reduce((a, b) => a + b, 0) / 3,
+                        monthData.slice(9, 12).reduce((a, b) => a + b, 0) / 3
+                    ];
+                } else {
+                    // Use all 12 months
+                    data = metricData[metric][trend];
+                }
+                
+                comparisonChart.data.datasets.push({
+                    label: trend,
+                    data: data,
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length].replace('rgb', 'rgba').replace(')', ', 0.1)'),
+                    tension: 0.1,
+                    fill: true
+                });
+            });
+            
+            // Update chart title based on metric
+            let metricTitle;
+            switch(metric) {
+                case 'popularity': metricTitle = 'Popularity Score'; break;
+                case 'growth': metricTitle = 'Growth Rate (%)'; break;
+                case 'social': metricTitle = 'Social Media Mentions'; break;
+                case 'search': metricTitle = 'Search Volume'; break;
+                default: metricTitle = 'Value';
+            }
+            
+            comparisonChart.options.scales.y.title.text = metricTitle;
+            comparisonChart.options.plugins.title.text = `Trend Comparison (${timeRange === 'week' ? 'Past Week' : timeRange === 'month' ? 'Past Month' : timeRange === 'quarter' ? 'Past 3 Months' : 'Past Year'})`;
+            
+            // Update the chart
+            comparisonChart.update();
+        });
+
+        // Update history chart
+        document.getElementById('update-history').addEventListener('click', function() {
+            const selectedTrend = document.getElementById('trend-select').value;
+            const timeframe = document.getElementById('timeframe-select').value;
+            const showPopularity = document.getElementById('popularity-check').checked;
+            const showEngagement = document.getElementById('engagement-check').checked;
+            const showMentions = document.getElementById('mentions-check').checked;
+            
+            // Sample data for different timeframes
+            const timeframeData = {
+                '1m': {
+                    'labels': ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    'popularity': {
+                        'New Marvel Series': [75, 82, 88, 95],
+                        'Scientists discover new planet': [80, 85, 90, 92],
+                        'Sustainable Fashion': [83, 84, 84, 85],
+                        'Latest Smartphone Release': [85, 86, 87, 88],
+                        'New documentary about AI': [80, 82, 85, 87]
+                    },
+                    'engagement': {
+                        'New Marvel Series': [70, 75, 82, 90],
+                        'Scientists discover new planet': [75, 80, 85, 90],
+                        'Sustainable Fashion': [65, 70, 75, 80],
+                        'Latest Smartphone Release': [60, 65, 70, 75],
+                        'New documentary about AI': [55, 60, 65, 70]
+                    },
+                    'mentions': {
+                        'New Marvel Series': [6000, 6500, 7000, 8000],
+                        'Scientists discover new planet': [6000, 6500, 7000, 7500],
+                        'Sustainable Fashion': [5500, 5700, 5900, 6000],
+                        'Latest Smartphone Release': [7000, 7100, 7150, 7200],
+                        'New documentary about AI': [5000, 5200, 5500, 6000]
+                    }
+                },
+                '3m': {
+                    'labels': ['Jan', 'Feb', 'Mar', 'Apr'],
+                    'popularity': {
+                        'New Marvel Series': [75, 85, 90, 95],
+                        'Scientists discover new planet': [70, 80, 85, 92],
+                        'Sustainable Fashion': [82, 83, 84, 85],
+                        'Latest Smartphone Release': [85, 86, 87, 88],
+                        'New documentary about AI': [75, 80, 85, 87]
+                    },
+                    'engagement': {
+                        'New Marvel Series': [68, 75, 82, 90],
+                        'Scientists discover new planet': [60, 70, 80, 90],
+                        'Sustainable Fashion': [62, 68, 74, 80],
+                        'Latest Smartphone Release': [55, 62, 68, 75],
+                        'New documentary about AI': [50, 58, 64, 70]
+                    },
+                    'mentions': {
+                        'New Marvel Series': [5000, 6000, 7000, 8000],
+                        'Scientists discover new planet': [5500, 6000, 6500, 7500],
+                        'Sustainable Fashion': [5300, 5500, 5800, 6000],
+                        'Latest Smartphone Release': [6800, 6900, 7000, 7200],
+                        'New documentary about AI': [4500, 5000, 5500, 6000]
+                    }
+                },
+                '6m': {
+                    'labels': ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+                    'popularity': {
+                        'New Marvel Series': [70, 75, 80, 85, 90, 95],
+                        'Scientists discover new planet': [60, 70, 75, 80, 85, 92],
+                        'Sustainable Fashion': [80, 80, 82, 83, 84, 85],
+                        'Latest Smartphone Release': [83, 84, 85, 86, 87, 88],
+                        'New documentary about AI': [65, 70, 75, 80, 85, 87]
+                    },
+                    'engagement': {
+                        'New Marvel Series': [60, 65, 70, 75, 82, 90],
+                        'Scientists discover new planet': [50, 55, 60, 70, 80, 90],
+                        'Sustainable Fashion': [55, 58, 62, 68, 74, 80],
+                        'Latest Smartphone Release': [42, 48, 55, 62, 68, 75],
+                        'New documentary about AI': [38, 45, 50, 58, 64, 70]
+                    },
+                    'mentions': {
+                        'New Marvel Series': [3000, 4000, 5000, 6000, 7000, 8000],
+                        'Scientists discover new planet': [3500, 4500, 5500, 6000, 6500, 7500],
+                        'Sustainable Fashion': [4800, 5000, 5300, 5500, 5800, 6000],
+                        'Latest Smartphone Release': [6500, 6600, 6800, 6900, 7000, 7200],
+                        'New documentary about AI': [3000, 3500, 4500, 5000, 5500, 6000]
+                    }
+                },
+                '1y': {
+                    'labels': ['Apr 2024', 'May 2024', 'Jun 2024', 'Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025'],
+                    'popularity': {
+                        'New Marvel Series': [25, 30, 35, 32, 40, 45, 55, 62, 70, 75, 85, 90, 95],
+                        'Scientists discover new planet': [20, 25, 30, 35, 40, 45, 50, 55, 65, 70, 80, 85, 92],
+                        'Sustainable Fashion': [50, 52, 55, 60, 65, 68, 70, 72, 75, 78, 80, 82, 85],
+                        'Latest Smartphone Release': [60, 65, 68, 70, 72, 75, 78, 80, 82, 84, 85, 86, 88],
+                        'New documentary about AI': [15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 75, 80, 87]
+                    },
+                    'engagement': {
+                        'New Marvel Series': [20, 22, 25, 30, 35, 40, 45, 52, 60, 68, 75, 82, 90],
+                        'Scientists discover new planet': [15, 20, 25, 30, 35, 40, 45, 50, 55, 65, 75, 85, 90],
+                        'Sustainable Fashion': [42, 45, 48, 50, 52, 55, 58, 62, 65, 68, 72, 75, 80],
+                        'Latest Smartphone Release': [35, 38, 42, 45, 48, 52, 55, 58, 62, 65, 68, 72, 75],
+                        'New documentary about AI': [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
+                    },
+                    'mentions': {
+                        'New Marvel Series': [1000, 1500, 2000, 2000, 2500, 3000, 3500, 4000, 5000, 6000, 6500, 7000, 8000],
+                        'Scientists discover new planet': [800, 1200, 1800, 2200, 2800, 3500, 4000, 4500, 5500, 6000, 6500, 7000, 7500],
+                        'Sustainable Fashion': [3800, 4000, 4200, 4500, 4800, 5000, 5200, 5400, 5600, 5700, 5800, 5900, 6000],
+                        'Latest Smartphone Release': [5800, 6000, 6200, 6400, 6600, 6700, 6800, 6900, 7000, 7050, 7100, 7150, 7200],
+                        'New documentary about AI': [500, 800, 1200, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000]
+                    }
+                },
+                'all': {
+                    'labels': ['2022', '2023', '2024', '2025 (YTD)'],
+                    'popularity': {
+                        'New Marvel Series': [30, 45, 70, 95],
+                        'Scientists discover new planet': [25, 40, 65, 92],
+                        'Sustainable Fashion': [40, 55, 70, 85],
+                        'Latest Smartphone Release': [50, 60, 75, 88],
+                        'New documentary about AI': [20, 35, 60, 87]
+                    },
+                    'engagement': {
+                        'New Marvel Series': [25, 40, 65, 90],
+                        'Scientists discover new planet': [20, 35, 60, 90],
+                        'Sustainable Fashion': [30, 45, 65, 80],
+                        'Latest Smartphone Release': [25, 40, 60, 75],
+                        'New documentary about AI': [15, 30, 50, 70]
+                    },
+                    'mentions': {
+                        'New Marvel Series': [1000, 3000, 5000, 8000],
+                        'Scientists discover new planet': [800, 2500, 4500, 7500],
+                        'Sustainable Fashion': [2000, 3500, 5000, 6000],
+                        'Latest Smartphone Release': [3000, 4500, 6000, 7200],
+                        'New documentary about AI': [500, 2000, 4000, 6000]
+                    }
+                }
+            };
+            
+            // Update chart data
+            historyChart.data.labels = timeframeData[timeframe]['labels'];
+            
+            // Clear existing datasets
+            historyChart.data.datasets = [];
+            
+            // Add datasets based on checkboxes
+            if (showPopularity) {
+                historyChart.data.datasets.push({
+                    label: 'Popularity Score',
+                    data: timeframeData[timeframe]['popularity'][selectedTrend],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                    yAxisID: 'y'
+                });
+            }
+            
+            if (showEngagement) {
+                historyChart.data.datasets.push({
+                    label: 'Engagement Rate',
+                    data: timeframeData[timeframe]['engagement'][selectedTrend],
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                    yAxisID: 'y'
+                });
+            }
+            
+            if (showMentions) {
+                historyChart.data.datasets.push({
+                    label: 'Social Mentions',
+                    data: timeframeData[timeframe]['mentions'][selectedTrend],
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    tension: 0.1,
+                    fill: true,
+                    yAxisID: 'y'
+                });
+            }
+            
+            // Update chart title
+            historyChart.options.plugins.title.text = `${selectedTrend} - Historical Data (${timeframe === '1m' ? 'Past Month' : timeframe === '3m' ? 'Past 3 Months' : timeframe === '6m' ? 'Past 6 Months' : timeframe === '1y' ? 'Past Year' : 'All Time'})`;
+            
+            // Update the chart
+            historyChart.update();
+            
+            // Update statistics
+            const statistics = {
+                'New Marvel Series': {
+                    'peak': 95,
+                    'average': 62.4,
+                    'growth': '+138%',
+                    'volatility': 'Medium'
+                },
+                'Scientists discover new planet': {
+                    'peak': 92,
+                    'average': 58.7,
+                    'growth': '+112%',
+                    'volatility': 'High'
+                },
+                'Sustainable Fashion': {
+                    'peak': 85,
+                    'average': 65.8,
+                    'growth': '+35%',
+                    'volatility': 'Low'
+                },
+                'Latest Smartphone Release': {
+                    'peak': 88,
+                    'average': 70.2,
+                    'growth': '+28%',
+                    'volatility': 'Low'
+                },
+                'New documentary about AI': {
+                    'peak': 87,
+                    'average': 54.3,
+                    'growth': '+82%',
+                    'volatility': 'Medium'
+                }
+            };
+            
+            document.querySelector('span.fw-bold:nth-child(2)').textContent = statistics[selectedTrend]['peak'];
+            document.querySelector('span.fw-bold:nth-child(4)').textContent = statistics[selectedTrend]['average'];
+            document.querySelector('span.fw-bold:nth-child(6)').textContent = statistics[selectedTrend]['growth'];
+            document.querySelector('span.fw-bold:nth-child(8)').textContent = statistics[selectedTrend]['volatility'];
+        });
+
+        // Initialize the comparison and history charts
+        document.getElementById('update-comparison').click();
+        document.getElementById('update-history').click();
+
+        // Show loading overlay when clicking navigation links
+        document.querySelectorAll('.nav-link:not(.time-filter)').forEach(link => {
+            link.addEventListener('click', function() {
+                // For demo purposes, we're not actually showing the loading overlay
+                // document.getElementById('loading-overlay').classList.remove('d-none');
+                // setTimeout(() => {
+                //     document.getElementById('loading-overlay').classList.add('d-none');
+                // }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

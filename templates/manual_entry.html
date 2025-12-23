@@ -1,0 +1,204 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5">
+            <i class="fas fa-plus-circle me-2"></i>Add New Trend
+        </h1>
+        <p class="lead">Manually track cultural trends you've spotted in the wild.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Manual Trend Entry Form</h4>
+            </div>
+            <div class="card-body">
+                <form id="manual-entry-form" method="POST" action="{{ url_for('manual_entry') }}">
+                    <div class="mb-3">
+                        <label for="trend_name" class="form-label">Trend Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="trend_name" name="trend_name" required>
+                        <div class="form-text">The name or title of the trend you're tracking</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="source" class="form-label">Source <span class="text-danger">*</span></label>
+                        <select class="form-select" id="source" name="source" required>
+                            <option value="" selected disabled>Select a source</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="Podcast">Podcast</option>
+                            <option value="Blog">Blog</option>
+                            <option value="IRL">IRL (In Real Life)</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="form-text">Where you discovered this trend</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="" selected disabled>Select a category</option>
+                            <option value="TV/Film">TV/Film</option>
+                            <option value="Product">Product</option>
+                            <option value="Meme">Meme</option>
+                            <option value="Aesthetic">Aesthetic</option>
+                            <option value="Event">Event</option>
+                        </select>
+                        <div class="form-text">What type of trend is this?</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="lifecycle_stage" class="form-label">Lifecycle Stage <span class="text-danger">*</span></label>
+                        <select class="form-select" id="lifecycle_stage" name="lifecycle_stage" required>
+                            <option value="" selected disabled>Select a lifecycle stage</option>
+                            <option value="Early">Early (Just emerging)</option>
+                            <option value="Peaking">Peaking (Currently hot)</option>
+                            <option value="Saturated">Saturated (Mainstream/declining)</option>
+                        </select>
+                        <div class="form-text">At what stage is this trend in its lifecycle?</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Pop Potential <span class="text-danger">*</span></label>
+                        <div>
+                            <input type="radio" class="btn-check" name="pop_potential" id="pop-potential-yes" value="yes" required>
+                            <label class="pop-potential-toggle" for="pop-potential-yes" id="pop-potential-yes-label">
+                                <i class="fas fa-check-circle me-1"></i>Yes
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="pop_potential" id="pop-potential-no" value="no">
+                            <label class="pop-potential-toggle" for="pop-potential-no" id="pop-potential-no-label">
+                                <i class="fas fa-times-circle me-1"></i>No
+                            </label>
+                        </div>
+                        <div class="form-text">Does this trend have potential to break into mainstream culture?</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        <div class="form-text">Optional details, observations, or context about this trend</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Save Trend
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="card bg-dark mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">What to Track</h5>
+            </div>
+            <div class="card-body">
+                <p>Use this form to track cultural trends you've spotted that are not yet captured in Google Trends or Reddit.</p>
+                <ul>
+                    <li><strong>New TikTok aesthetics</strong> (e.g., "coastal grandmother")</li>
+                    <li><strong>Emerging products</strong> seen in your social circles</li>
+                    <li><strong>Content formats</strong> gaining traction</li>
+                    <li><strong>Cultural events</strong> with growing attention</li>
+                    <li><strong>New language/slang</strong> being used</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card bg-dark">
+            <div class="card-header">
+                <h5 class="mb-0">Tips for Good Entries</h5>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li><strong>Be specific</strong> with trend names</li>
+                    <li><strong>Note where</strong> you first encountered it</li>
+                    <li><strong>Assess lifecycle stage</strong> honestly</li>
+                    <li><strong>Consider pop potential</strong> based on appeal to broader audiences</li>
+                    <li><strong>Add context</strong> in the notes field</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Form validation
+    document.getElementById('manual-entry-form').addEventListener('submit', function(event) {
+        const form = event.target;
+        const popPotentialYes = document.getElementById('pop-potential-yes');
+        const popPotentialNo = document.getElementById('pop-potential-no');
+        
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Highlight missing fields
+            Array.from(form.elements).forEach(input => {
+                if (input.required && !input.value) {
+                    input.classList.add('is-invalid');
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+            
+            // Check pop potential radio buttons
+            if (!popPotentialYes.checked && !popPotentialNo.checked) {
+                document.getElementById('pop-potential-yes-label').classList.add('border-danger');
+                document.getElementById('pop-potential-no-label').classList.add('border-danger');
+            } else {
+                document.getElementById('pop-potential-yes-label').classList.remove('border-danger');
+                document.getElementById('pop-potential-no-label').classList.remove('border-danger');
+            }
+            
+            // Show error message
+            const alert = document.createElement('div');
+            alert.classList.add('alert', 'alert-danger', 'mt-3');
+            alert.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Please fill out all required fields.';
+            
+            // Only add alert if it doesn't exist already
+            if (!document.querySelector('.alert-danger')) {
+                form.appendChild(alert);
+            }
+        }
+    });
+    
+    // Visual feedback for input fields
+    document.querySelectorAll('input, select, textarea').forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.required && !this.value) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    // Pop potential toggle behavior
+    document.getElementById('pop-potential-yes').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('pop-potential-yes-label').classList.add('active');
+            document.getElementById('pop-potential-no-label').classList.remove('active');
+            document.getElementById('pop-potential-yes-label').classList.remove('border-danger');
+            document.getElementById('pop-potential-no-label').classList.remove('border-danger');
+        }
+    });
+    
+    document.getElementById('pop-potential-no').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('pop-potential-no-label').classList.add('active');
+            document.getElementById('pop-potential-yes-label').classList.remove('active');
+            document.getElementById('pop-potential-yes-label').classList.remove('border-danger');
+            document.getElementById('pop-potential-no-label').classList.remove('border-danger');
+        }
+    });
+</script>
+{% endblock %}

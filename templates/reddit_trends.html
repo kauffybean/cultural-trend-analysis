@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5">
+            <i class="fab fa-reddit-alien me-2"></i>Reddit Trends
+        </h1>
+        <p class="lead">Top posts from cultural and trend-focused subreddits.</p>
+    </div>
+</div>
+
+<!-- Subreddit filters -->
+<div class="row mb-3">
+    <div class="col">
+        <h4>Filter by Subreddit</h4>
+        <div class="category-filters">
+            <button class="btn btn-sm btn-outline-secondary filter-btn active" data-filter="all">All</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="popculturechat">r/popculturechat</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="AskTikTok">r/AskTikTok</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="femalefashionadvice">r/femalefashionadvice</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="internetisbeautiful">r/internetisbeautiful</button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Top Reddit Posts</h4>
+            </div>
+            <div class="card-body">
+                {% if trends %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="trends-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subreddit</th>
+                                <th>Score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trend in trends %}
+                            <tr>
+                                <td>{{ trend.title }}</td>
+                                <td>
+                                    <span class="badge source-badge-reddit">r/{{ trend.subreddit }}</span>
+                                </td>
+                                <td>{{ trend.score }}</td>
+                                <td>
+                                    <a href="{{ trend.permalink }}" target="_blank" class="btn btn-sm btn-outline-info me-1" data-bs-toggle="tooltip" title="View on Reddit">
+                                        <i class="fab fa-reddit"></i>
+                                    </a>
+                                    <a href="{{ trend.url }}" target="_blank" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Visit Link">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No Reddit data available. Try refreshing the page.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monitored subreddits -->
+<div class="row mt-4">
+    <div class="col">
+        <div class="card bg-dark">
+            <div class="card-header">
+                <h5 class="mb-0">Monitored Subreddits</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">r/popculturechat</h5>
+                                <p class="card-text">Discussions about celebrities, entertainment, and pop culture trends.</p>
+                                <a href="https://www.reddit.com/r/popculturechat" target="_blank" class="btn btn-sm btn-outline-danger">Visit Subreddit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">r/AskTikTok</h5>
+                                <p class="card-text">Questions and discussions about TikTok content and trends.</p>
+                                <a href="https://www.reddit.com/r/AskTikTok" target="_blank" class="btn btn-sm btn-outline-danger">Visit Subreddit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">r/femalefashionadvice</h5>
+                                <p class="card-text">Fashion trends, advice, and discussions predominantly for women.</p>
+                                <a href="https://www.reddit.com/r/femalefashionadvice" target="_blank" class="btn btn-sm btn-outline-danger">Visit Subreddit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">r/internetisbeautiful</h5>
+                                <p class="card-text">Interesting and unique websites, tools, and internet content.</p>
+                                <a href="https://www.reddit.com/r/internetisbeautiful" target="_blank" class="btn btn-sm btn-outline-danger">Visit Subreddit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize DataTables
+    $(document).ready(function() {
+        $('#trends-table').DataTable({
+            responsive: true,
+            order: [[2, 'desc']], // Sort by score initially
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 }, // Title
+                { responsivePriority: 2, targets: 2 }, // Score
+                { responsivePriority: 3, targets: 1 }, // Subreddit
+                { responsivePriority: 4, targets: 3 }  // Actions
+            ]
+        });
+        
+        // Modify filter button behavior to filter subreddit column
+        $('.filter-btn').click(function() {
+            $('.filter-btn').removeClass('active');
+            $(this).addClass('active');
+            
+            var filterValue = $(this).data('filter');
+            var table = $('#trends-table').DataTable();
+            
+            if (filterValue === 'all') {
+                table.column(1).search('').draw();
+            } else {
+                table.column(1).search(filterValue).draw();
+            }
+        });
+    });
+</script>
+{% endblock %}

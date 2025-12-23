@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5">
+            <i class="fab fa-google me-2"></i>Google Trends
+        </h1>
+        <p class="lead">Top rising searches from Google Trends in key categories.</p>
+    </div>
+</div>
+
+<!-- Category filters -->
+<div class="row mb-3">
+    <div class="col">
+        <h4>Filter by Category</h4>
+        <div class="category-filters">
+            <button class="btn btn-sm btn-outline-secondary filter-btn active" data-filter="all">All</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="Entertainment">Entertainment</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="Shopping">Shopping</button>
+            <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="Pop Culture">Pop Culture</button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Trending Searches</h4>
+            </div>
+            <div class="card-body">
+                {% if trends %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="trends-table">
+                        <thead>
+                            <tr>
+                                <th>Topic</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Search Interest</th>
+                                <th>Change</th>
+                                <th>Region</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trend in trends %}
+                            <tr>
+                                <td>{{ trend.title }}</td>
+                                <td>{{ trend.category }}</td>
+                                <td>{{ trend.type }}</td>
+                                <td>{{ trend.traffic_score }}</td>
+                                <td>
+                                    {% if trend.change > 0 %}
+                                        <span class="text-success">+{{ trend.change }}</span>
+                                    {% elif trend.change < 0 %}
+                                        <span class="text-danger">{{ trend.change }}</span>
+                                    {% else %}
+                                        <span class="text-muted">0</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ trend.region }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No Google Trends data available. Try refreshing the page.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Data explanation -->
+<div class="row mt-4">
+    <div class="col">
+        <div class="card bg-dark">
+            <div class="card-header">
+                <h5 class="mb-0">About Google Trends Data</h5>
+            </div>
+            <div class="card-body">
+                <p>Data is sourced from Google Trends API and includes:</p>
+                <ul>
+                    <li><strong>Topic:</strong> The search term or topic that is trending</li>
+                    <li><strong>Category:</strong> The topic's primary category (Entertainment, Shopping, or Pop Culture)</li>
+                    <li><strong>Type:</strong> Whether the trend is daily or weekly</li>
+                    <li><strong>Search Interest:</strong> A relative score (0-100) that indicates search volume</li>
+                    <li><strong>Change:</strong> Change in search interest over the time period</li>
+                    <li><strong>Region:</strong> Geographic region of the trend data (US)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize DataTables
+    $(document).ready(function() {
+        $('#trends-table').DataTable({
+            responsive: true,
+            order: [[3, 'desc']], // Sort by search interest initially
+            paging: false
+        });
+    });
+</script>
+{% endblock %}
