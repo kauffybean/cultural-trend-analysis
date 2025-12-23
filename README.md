@@ -8,6 +8,8 @@ This tool is designed to reduce the friction between *observing trends* and *tur
 
 ## Why I Built This
 
+Note: This is very-much-so a v1 attempt and requires much more refinement! 
+
 I started this project after recognizing a consistent gap between how trends are *discussed* and how they are actually *monetized*.
 
 From an affiliate marketing and content strategy perspective, there is real leverage in understanding:
