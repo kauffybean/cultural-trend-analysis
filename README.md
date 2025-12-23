@@ -1,155 +1,67 @@
 # Cultural Trend Aggregator
 
-A solo-use cultural trend aggregator application built with Python and Flask that collects, analyzes, and displays trending topics from multiple sources with deeply actionable AI-powered insights.
+A solo-use cultural trend aggregator built with Python and Flask that collects, analyzes, and synthesizes emerging cultural signals into deeply actionable, AI-powered insights.
+
+This tool is designed to reduce the friction between *observing trends* and *turning them into decisions*—whether that’s content strategy, affiliate monetization, or early product exploration.
+
+---
+
+## Why I Built This
+
+I started this project after recognizing a consistent gap between how trends are *discussed* and how they are actually *monetized*.
+
+From an affiliate marketing and content strategy perspective, there is real leverage in understanding:
+- What people are searching for
+- How interest evolves over time (long-tail, seasonal, brand-driven)
+- Where cultural curiosity turns into purchase intent
+
+I sketched out a simple three-phase path to monetization:
+1. **Trend discovery & pattern recognition**
+2. Strategic content creation aligned to intent
+3. Monetization through affiliate, brand, or product channels
+
+This application is intentionally focused on **Phase 1: research**.
+
+Before building this, my options were:
+- Scraping data ad hoc with R or Python scripts (powerful, but clunky and slow for daily use)
+- Paying for expensive keyword and trend tools that optimize for SEO volume, not cultural context
+- Manually stitching together insights across Google Trends, Reddit, and social platforms—high effort, low signal
+
+What frustrated me most wasn’t the lack of data—it was the *cost and friction required to get to a real insight*.
+
+I wanted a tool that:
+- Aggregates cultural signals in one place
+- Surfaces *why* something is trending, not just that it is
+- Translates raw signals into actionable thinking: risks, opportunities, and strategic angles
+
+This is very much a **version 1**—a side project built to scratch a personal itch—but it reflects how I think about product design, research tooling, and monetization pathways. It’s opinionated, lightweight, and intentionally focused on clarity over exhaustiveness.
+
+---
 
 ## Features
 
 ### Data Aggregation
 - **Google Trends**: Automatically fetches trending topics from Entertainment, Shopping, and Pop Culture categories
 - **Reddit**: Monitors trending posts from curated subreddits (popculturechat, AskTikTok, femalefashionadvice, internetisbeautiful)
-- **Manual Entries**: Add your own trend observations with custom categories and lifecycle stages
+- **Manual Entries**: Add first-hand trend observations with custom categories and lifecycle stages
 
 ### AI-Powered Trend Analysis
-Leverages OpenAI's GPT-4o model to generate comprehensive, actionable insights including:
+Leverages OpenAI’s GPT-4o model to generate structured, decision-oriented insights:
 
-- **Social Listening Analysis**: What people are actually saying about trends, with sentiment breakdowns showing positive reactions, criticisms, and demographic variations
-- **Behavioral Economics Drivers**: Psychological motivations, cognitive biases, and decision-making factors driving trend adoption
-- **Market Opportunity Identification**: Specific product gaps, service innovations, competitive advantages, and optimal timing recommendations
-- **Engagement Strategies**: Concrete marketing tactics, product development ideas, community building approaches, and KPI tracking suggestions
-- **Risk Assessment**: Potential backlash scenarios, regulatory considerations, competitive threats, and trend sustainability forecasts
-- **Content Ideas**: Specific content angles and creative directions for capitalizing on trends
+- **Social Listening Analysis**: What people are actually saying, with sentiment breakdowns and points of tension
+- **Behavioral Economics Drivers**: Psychological motivations and adoption mechanics
+- **Market Opportunity Identification**: Product gaps, timing considerations, and monetization angles
+- **Engagement Strategies**: Content ideas, community hooks, and execution suggestions
+- **Risk Assessment**: Sustainability, backlash, and competitive saturation
+- **Content Ideation**: Specific creative directions informed by cultural context
 
 ### Dashboard & Interface
-- **Unified Trend View**: All trends displayed in a sortable, filterable table
-- **Category Filtering**: Quick filters for Entertainment, Shopping, Pop Culture, and Social Media
-- **Popularity Scoring**: Trends ranked by engagement metrics
-- **Light Mode Theme**: Clean, professional interface design
-- **Responsive Design**: Works on desktop and mobile devices
+- **Unified Trend View**: All trends in a sortable, filterable table
+- **Category Filtering**: Entertainment, Shopping, Pop Culture, Social Media
+- **Popularity Scoring**: Lightweight ranking based on engagement signals
+- **Clean UI**: Light mode, responsive, and designed for frequent use
 
 ### Data Persistence
-- **Historical Tracking**: Trend data stored in PostgreSQL for time-based analysis
-- **Analysis Caching**: AI analyses cached for 12 hours to balance freshness with API efficiency
-- **Trend History**: Track how trends evolve over time
-
-## Tech Stack
-
-- **Backend**: Python 3, Flask, SQLAlchemy
-- **Database**: PostgreSQL (via Neon)
-- **AI**: OpenAI GPT-4o
-- **APIs**: Google Trends (pytrends), Reddit (PRAW)
-- **Frontend**: Bootstrap 5, DataTables, Chart.js
-- **Server**: Gunicorn
-
-## Project Structure
-
-```
-├── app.py                 # Main Flask application with routes
-├── main.py                # Application entry point
-├── models.py              # SQLAlchemy database models
-├── trend_analysis.py      # AI-powered trend analysis engine
-├── trends_google.py       # Google Trends data fetcher
-├── trends_reddit.py       # Reddit API integration
-├── trends_manual.py       # Manual trend entry handler
-├── templates/
-│   ├── index.html         # Main dashboard template
-│   ├── trend_detail.html  # Detailed trend analysis view
-│   ├── manual_entry.html  # Manual trend input form
-│   └── base.html          # Base template with common layout
-├── static/
-│   ├── css/custom.css     # Custom styling
-│   └── js/main.js         # Frontend interactivity
-├── data/
-│   └── manual_trends.json # Storage for manual entries
-└── pyproject.toml         # Python dependencies
-```
-
-## Environment Variables
-
-The application requires the following environment variables:
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `OPENAI_API_KEY` | OpenAI API key for trend analysis | Yes |
-| `SESSION_SECRET` | Flask session secret key | Yes |
-| `REDDIT_CLIENT_ID` | Reddit API client ID | Optional* |
-| `REDDIT_CLIENT_SECRET` | Reddit API client secret | Optional* |
-
-*Reddit credentials are optional; the app uses fallback data if not provided.
-
-## Installation & Setup
-
-1. **Clone the repository**
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-   Or with uv:
-   ```bash
-   uv sync
-   ```
-
-3. **Set up environment variables** (see table above)
-
-4. **Initialize the database**
-   The database tables are automatically created on first run.
-
-5. **Run the application**
-   ```bash
-   gunicorn --bind 0.0.0.0:5000 --reload main:app
-   ```
-
-## Usage
-
-### Viewing Trends
-1. Open the application in your browser
-2. The main dashboard displays all aggregated trends in a sortable table
-3. Use category filter buttons to focus on specific trend types
-4. Click on any trend row to view detailed AI analysis
-
-### Adding Manual Trends
-1. Click "Add Trend" in the navigation
-2. Fill in the trend details:
-   - Trend name
-   - Source (where you observed it)
-   - Category
-   - Lifecycle stage (Emerging, Growing, Peak, Declining)
-   - Pop potential indicator
-3. Submit to add to your trend collection
-
-### Analyzing Trends
-1. Click on any trend in the table
-2. View the comprehensive AI-generated analysis with tabs for:
-   - Overview & Context
-   - Social Listening
-   - Behavioral Drivers
-   - Market Opportunities
-   - Engagement Strategies
-   - Risk Analysis
-   - Content Ideas
-
-## API Fallbacks
-
-The application includes robust fallback mechanisms:
-- **Google Trends**: If API rate limits are hit, uses cached/sample data
-- **Reddit**: If authentication fails, uses curated sample posts
-- **OpenAI**: If analysis fails, displays informative error messages
-
-## Development
-
-### Running in Development Mode
-```bash
-python main.py
-```
-
-### Database Migrations
-The app uses SQLAlchemy with automatic table creation. Models are defined in `models.py`.
-
-## License
-
-This project is for personal/solo use.
-
-## Contributing
-
-This is a solo-use application. Feel free to fork and adapt for your own needs.
+- **Historical Tracking**: PostgreSQL-backed trend storage for time-based analysis
+- **Analysis Caching**: AI insights cached for efficiency without sacrificing freshness
+- **Trend Evolution**: Observe how interest changes across lifecycle stages
